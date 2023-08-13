@@ -1,11 +1,5 @@
-"""
-6.1010 Spring '23 Lab 12: LISP Interpreter Part 2
-"""
-#!/usr/bin/env python3
 import sys
 sys.setrecursionlimit(20_000)
-
-# NO ADDITIONAL IMPORTS!
 
 #############################
 # Scheme-related Exceptions #
@@ -104,7 +98,6 @@ def tokenize(source):
     return tokens
 
 def parse(tokens):
-    
     #check well formed
     open_par = 0
     close_par = 0
@@ -155,7 +148,6 @@ def parse(tokens):
                     if open_par == close_par:
                         return i
                     
-            # print('parse expression at index', index)
             end_parens = get_parens_end(index)
             if tokens[index] == "(":
                 result = []
@@ -172,12 +164,9 @@ def parse(tokens):
                         i += 1
                 return (result, end_parens)
             else:
-                # print('third else')
                 conv = number_or_symbol(tokens[index])
-                # print('return', conv)
                 return (conv, index)
         
-        # print('parse', tokens)
         if len(tokens) == 0:
             return []
         elif len(tokens) == 1:
@@ -219,11 +208,7 @@ scheme_builtins = {
     "reduce": lambda args: reduce(args[0], args[1], args[2]),
     "begin": lambda args: begin(args),
     # "del": lambda arg: delete(arg)
-}
-
-# def delete(var):
-#     frame.remove
-    
+}   
 
 def evaluate_file(file_name, frame=None):
     """
@@ -247,7 +232,6 @@ def reduce(func, ls, initval):
     """
     Reduces ls by applying func element by element starting with initval.
     """
-    # print('\n','REDUCING')
     if not list_q([ls]):
         raise SchemeEvaluationError("passed in nonlist")
     elts = []
@@ -263,7 +247,6 @@ def filt(func, ls):
     """
     Filters ls and returns tree of only elements that satisfy func.
     """
-    # print('\n','FILTERING')
     if not list_q([ls]):
         raise SchemeEvaluationError("passed in nonlist")
     result = []
@@ -281,7 +264,6 @@ def map_func(func, ls):
     Maps the func to ls and returns a new list with func applied to every
     element of ls.
     """
-    # print('\n','MAPPING')
     if not list_q([ls]):
         raise SchemeEvaluationError("passed in nonlist")
     result = []
@@ -334,13 +316,11 @@ def length(ls):
     """
     ls is [ls]. returns length of ls
     """
-    # pri
     if not list_q(ls):
         raise SchemeEvaluationError("input not a list")
     length = 0
     cur_ls = ls[0]
     while cur_ls != []:
-        # print('boo', cur_ls)
         cur_ls = get_cdr([cur_ls])
         length += 1
     return length
@@ -349,16 +329,9 @@ def list_q(obj):
     """
     obj is [object]. returns whether obj is a list
     """
-    # print('1', obj[0])
-    # print('2', isinstance(obj[0], Pair))
-    # print('3', get_cdr([obj[0]]))
-    # print('4', isinstance(get_cdr([obj[0]]), Pair))
-    # print('hihi', obj)
     if len(obj) == 1 and obj[0] == []:
-        # print('catch 1')
         return True
     elif isinstance(obj[0], Pair) and list_q([get_cdr([obj[0]])]):
-        # print('catch 2')
         return True
     return False
 
@@ -367,9 +340,6 @@ def get_car(arg):
     arg is [object]. returns car of arg
     """
     if (len(arg) != 1) or not isinstance(arg[0], Pair):
-        # print(arg)
-        # print(not isinstance(arg[0], Pair))
-        # print(len(arg) != 1)
         raise SchemeEvaluationError
     return arg[0].car
 
@@ -377,7 +347,6 @@ def get_cdr(arg):
     """
     arg is [object]. returns cdr of arg
     """
-    # print('hererer', arg[0])
     if (len(arg) != 1) or not isinstance(arg[0], Pair):
         raise SchemeEvaluationError
     return arg[0].cdr
@@ -455,8 +424,6 @@ class Frame():
         Returns expression binded to key in frame or parent frame, 
         or None if no expression exists.
         """
-        # print('here', self.bindings)
-        # print(key)
         if key in self.bindings:
             return self.bindings[key]
         elif key in self.old_bindings:
@@ -469,7 +436,6 @@ class Frame():
             else:
                 raise "special case error"
         elif isinstance(self.parent, type(None)):
-            # print('herererer') 
             raise SchemeNameError
         else:
             return self.parent.get_binding(key) 
@@ -526,10 +492,7 @@ class Function(Frame):
         if len(tree_simplified) != len(self.params):
             raise SchemeEvaluationError
         for i in range(len(tree_simplified)):
-            # print('storing', tree_simplified[i], 'into', self.params[i])
             new_frame.store_binding(self.params[i], tree_simplified[i])
-        # print('in called function with all bindings', new_frame.bindings)
-        # print('parent bindings are', self.parent.bindings)
         return evaluate(self.body, new_frame)
     
     def __str__(self):
@@ -544,10 +507,7 @@ class Pair():
         self.cdr = cdr
         
     def __str__(self):
-        return "Pair(" + str(self.car) + ", " + str(self.cdr) + ")"
-        
-    
-    
+        return "Pair(" + str(self.car) + ", " + str(self.cdr) + ")"    
 
 global_frame = Frame(None, scheme_builtins)
 
@@ -571,9 +531,7 @@ def create_list(params, frame=None):
             result = Pair([], result)
         else:
             result = Pair(eval_params[i], result)
-    return result
-            
-    
+    return result  
 
 def evaluate(tree, frame=None):
     """
@@ -584,7 +542,6 @@ def evaluate(tree, frame=None):
         tree (type varies): a fully parsed expression, as the output from the
                             parse function
     """
-    # print('eval', tree)
     if isinstance(frame, type(None)):
         frame = Frame(global_frame, None)
         
@@ -699,7 +656,6 @@ def result_and_frame(tree, frame=None):
     if isinstance(frame, type(None)):
         frame = Frame(global_frame, None)
     return (evaluate(tree, frame), frame)
-    
 
 def repl(verbose=False, file_name=None):
     """
@@ -732,16 +688,10 @@ def repl(verbose=False, file_name=None):
                 traceback.print_tb(e.__traceback__)
             print("Error>", repr(e))
 
-
 if __name__ == "__main__":
-    # code in this block will only be executed if lab.py is the main file being
-    # run (not when this module is imported)
- 
-    # uncommenting the following line will run doctests from above
-    # doctest.testmod()
+    doctest.testmod()
 
-    # x = "(begin (define y 17) (let ((foo (lambda (x y z) (+ y z)))) (foo 1 2 3)) (foo 7 8 9))"
-    x = "(reduce append (map (lambda (i) (append (list 2) i)) (filter (lambda (i) (< (length i) 4)) (list (list) (list 9 8 7 6 5) (list 1 2 3) (list 34)))) (list))"
+    #example usage:
     x = "(begin (define (contains? list_ elt) (if (equal? nil list_) #f (if (equal? (car list_) elt) #t (contains? (cdr list_) elt)))) (if (contains? (list 1 2 3) 2) 1 0))"
     y = evaluate(parse(tokenize(x)))
     print(y)
