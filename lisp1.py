@@ -1,15 +1,7 @@
-"""
-6.1010 Spring '23 Lab 11: LISP Interpreter Part 1
-"""
-#!/usr/bin/env python3
-
 import sys
 import doctest
 
 sys.setrecursionlimit(20_000)
-
-
-# NO ADDITIONAL IMPORTS!
 
 #############################
 # Scheme-related Exceptions #
@@ -78,7 +70,6 @@ def number_or_symbol(value):
         except ValueError:
             return value
 
-
 def tokenize(source):
     """
     Splits an input string into meaningful tokens (left parens, right parens,
@@ -107,11 +98,7 @@ def tokenize(source):
     tokens = new_s.split()
     return tokens
 
-  
-
-
 def parse(tokens):
-    
     #check well formed
     open_par = 0
     close_par = 0
@@ -139,8 +126,7 @@ def parse(tokens):
     
         Arguments:
             tokens (list): a list of strings representing tokens
-        """        
-        
+        """          
                 
         def parse_expression(index):
             """
@@ -162,7 +148,6 @@ def parse(tokens):
                     if open_par == close_par:
                         return i
                     
-            # print('parse expression at index', index)
             end_parens = get_parens_end(index)
             if tokens[index] == "(":
                 result = []
@@ -179,12 +164,9 @@ def parse(tokens):
                         i += 1
                 return (result, end_parens)
             else:
-                # print('third else')
                 conv = number_or_symbol(tokens[index])
-                # print('return', conv)
                 return (conv, index)
         
-        # print('parse', tokens)
         if len(tokens) == 0:
             return []
         elif len(tokens) == 1:
@@ -200,15 +182,12 @@ def parse(tokens):
 # Built-in Functions #
 ######################
 
-
 scheme_builtins = {
     "+": sum,
     "-": lambda args: -args[0] if len(args) == 1 else (args[0] - sum(args[1:])),
     "*": lambda args: mul(args),
     "/": lambda args: div(args)
 }
-
-
     
 def mul(args):
     result = args[0]
@@ -337,7 +316,6 @@ def evaluate(tree, frame=None):
         if isinstance(func, Function):
             return func.call(tree_simplified)
         return func(tree_simplified)
-    
 
 def simplify_tree(tree, frame):
     tree_simplified = []
@@ -360,8 +338,7 @@ def result_and_frame(tree, frame=None):
     """
     if isinstance(frame, type(None)):
         frame = Frame(global_frame, None)
-    return (evaluate(tree, frame), frame)
-    
+    return (evaluate(tree, frame), frame)    
 
 def repl(verbose=False):
     """
@@ -393,79 +370,5 @@ def repl(verbose=False):
             print("Error>", repr(e))
 
 if __name__ == "__main__":
-    # code in this block will only be executed if lab.py is the main file being
-    # run (not when this module is imported)
-    # n = 18
-    # with open(os.path.join(TEST_DIRECTORY, "test_outputs", f"{n:02d}.txt")) as f:
-    #     expected = eval(f.read())
-    # env = None
-    # results = []
-    # try:
-    #     t = make_tester(result_and_frame)
-    # except:
-    #     t = make_tester(evaluate)
-    # with open(os.path.join(TEST_DIRECTORY, "test_inputs", f"{n:02d}.scm")) as f:
-    #     for line in iter(f.readline, ""):
-    #         try:
-    #             parsed = lab.parse(lab.tokenize(line.strip()))
-    #         except lab.SchemeSyntaxError:
-    #             print('here')
-    #             results.append(
-    #                 {
-    #                     "expression": line.strip(),
-    #                     "ok": False,
-    #                     "type": "SchemeSyntaxError",
-    #                     "when": "parse",
-    #                 }
-    #             )
-    #             continue
-    #         out = t(*((parsed,) if env is None else (parsed, env)))
-    #         if out["ok"]:
-    #             env = out["output"][1]
-    #         if out["ok"]:
-    #             try:
-    #                 typecheck = (int, float, lab.Pair)
-    #                 func = list_from_ll
-    #             except:
-    #                 typecheck = (int, float)
-    #                 func = lambda x: x if isinstance(x, typecheck) else "SOMETHING"
-    #             out["output"] = func(out["output"][0])
-    #         out["expression"] = line.strip()
-    #         results.append(out)
-    # for ix, (result, exp) in enumerate(zip(results, expected)):
-    #     msg = f"for line {ix+1} in test_inputs/{n:02d}.scm:\n    {result['expression']}"
-    #     compare_outputs(result, exp, msg=msg)
-        
-    x = "(define (spam eggs) (lambda (x y) (- eggs x y)))"
-    x = "((spam 9) 8)"
-    print(x)
-    print(tokenize(x))
-    print(parse(tokenize(x)))
-    # uncommenting the following line will run doctests from above
-    # doctest.testmod()
-    # repl(True)
-    # l = "(define (square x) (* x x))"
-    # a = tokenize(l)
-    # b = parse(a)
-    # c = rewrite_function(b)
-    # print(c)
-    # print('heeh' , evaluate(b))
-    # z = "(square 21)"
-    # y = tokenize(z)
-    # x = parse(y)
-    # zz = evaluate(x)
-    # print('lili', zz)
-    # print(a)
-    # print(b)
-    # print(x)
-    # print(rewrite_function(b))
-    # s = "(define circle-area\n  (lambda (r) ;hi there \n   (* 3.14 (* r r))\n  )\n)"
-    # print(s)
-    # s = s.split()
-    # print(s)
-    # d = "  d  \n     s"
-    # d = d.split()
-    # x = parse(['(', '+', '2', 'x' ,')'])
-    # x = evaluate(['*', 3, 3, 3])
-    # output = result_and_frame(5)
-    # print(output)
+    doctest.testmod()
+    
